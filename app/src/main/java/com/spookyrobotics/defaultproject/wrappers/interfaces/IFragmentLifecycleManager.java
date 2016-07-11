@@ -1,4 +1,4 @@
-package com.spookyrobotics.defaultproject.nonCompat.wrappers.interfaces;
+package com.spookyrobotics.defaultproject.wrappers.interfaces;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.util.Pair;
 import com.spookyrobotics.defaultproject.functional.Receiver;
 
 public interface IFragmentLifecycleManager {
+    boolean addOnActivityCreatedListener(Receiver<Fragment> receiver);
+
     boolean addOnResumeListener(Receiver<Fragment> receiver);
 
     boolean addOnPauseListener(Receiver<Fragment> receiver);
@@ -18,6 +20,7 @@ public interface IFragmentLifecycleManager {
 
     boolean addOnStoppedListener(Receiver<Fragment> receiver);
 
+    boolean removeOnActivityCreatedListener(Receiver<Fragment> receiver);
     boolean removeOnResumeListener(Receiver<Fragment> receiver);
 
     boolean removeOnPauseListener(Receiver<Fragment> receiver);
@@ -28,4 +31,6 @@ public interface IFragmentLifecycleManager {
     boolean removeOnStartedListener(Receiver<Fragment> receiver);
 
     boolean removeOnStoppedListener(Receiver<Fragment> receiver);
+
+
 }

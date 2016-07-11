@@ -1,11 +1,11 @@
-package com.spookyrobotics.defaultproject.nonCompat.wrappers;
+package com.spookyrobotics.defaultproject.wrappers;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Pair;
 
 import com.spookyrobotics.defaultproject.functional.Receiver;
-import com.spookyrobotics.defaultproject.nonCompat.wrappers.interfaces.IActivityLifecycleManager;
+import com.spookyrobotics.defaultproject.wrappers.interfaces.IActivityLifecycleManager;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,7 +19,7 @@ class ActivityLifecycleManager implements IActivityLifecycleManager {
     private final Set<Receiver<Activity>> mOnStartedListeners = Collections.synchronizedSet(new HashSet<>());
     private final Set<Receiver<Activity>> mOnStoppedListeners = Collections.synchronizedSet(new HashSet<>());
 
-    boolean addOnResumeListener(Receiver<Activity> receiver){
+    public boolean addOnResumeListener(Receiver<Activity> receiver){
         return mOnResumeListeners.add(receiver);
     }
 

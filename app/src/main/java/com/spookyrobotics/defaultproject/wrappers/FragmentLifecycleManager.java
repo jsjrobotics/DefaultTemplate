@@ -1,11 +1,11 @@
-package com.spookyrobotics.defaultproject.nonCompat.wrappers;
+package com.spookyrobotics.defaultproject.wrappers;
 
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Pair;
 
 import com.spookyrobotics.defaultproject.functional.Receiver;
-import com.spookyrobotics.defaultproject.nonCompat.wrappers.interfaces.IFragmentLifecycleManager;
+import com.spookyrobotics.defaultproject.wrappers.interfaces.IFragmentLifecycleManager;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,14 +18,20 @@ class FragmentLifecycleManager implements IFragmentLifecycleManager {
     private final Set<Receiver<Pair<Fragment, Bundle>>> mOnSaveInstanceStateListeners = Collections.synchronizedSet(new HashSet<>());
     private final Set<Receiver<Fragment>> mOnStartedListeners = Collections.synchronizedSet(new HashSet<>());
     private final Set<Receiver<Fragment>> mOnStoppedListeners = Collections.synchronizedSet(new HashSet<>());
+    private Set<Receiver<Fragment>> mOnActivityCreatedListeners = Collections.synchronizedSet(new HashSet<>());;
 
     public boolean addOnResumeListener(Receiver<Fragment> receiver){
         return mOnResumeListeners.add(receiver);
     }
 
+    public boolean addOnActivityCreatedListener(Receiver<Fragment> receiver){
+        return mOnActivityCreatedListeners.add(receiver);
+    }
+
     public boolean addOnPauseListener(Receiver<Fragment> receiver){
         return mOnPauseListeners.add(receiver);
     }
+    
 
     public boolean addOnDestroyedListener(Receiver<Fragment> receiver){
         return mOnDestroyedListeners.add(receiver);
@@ -40,6 +46,10 @@ class FragmentLifecycleManager implements IFragmentLifecycleManager {
 
     public boolean addOnStoppedListener(Receiver<Fragment> receiver){
         return mOnStoppedListeners.add(receiver);
+    }
+
+    public boolean removeOnActivityCreatedListener(Receiver<Fragment> receiver){
+        return mOnActivityCreatedListeners.remove(receiver);
     }
 
     public boolean removeOnResumeListener(Receiver<Fragment> receiver){
@@ -65,46 +75,46 @@ class FragmentLifecycleManager implements IFragmentLifecycleManager {
         return mOnStoppedListeners.remove(receiver);
     }
 
-    void notifyOnStart(final Fragment Fragment) {
+    void notifyOnStart(final Fragment fragment) {
         synchronized (mOnStartedListeners){
             for(Receiver<Fragment> r : mOnStartedListeners){
-                r.accept(Fragment);
+                r.accept(fragment);
             }
         }
     }
 
-    void notifyOnResume(final Fragment Fragment) {
+    void notifyOnResume(final Fragment fragment) {
         synchronized (mOnResumeListeners){
             for(Receiver<Fragment> r : mOnResumeListeners){
-                r.accept(Fragment);
+                r.accept(fragment);
             }
         }
     }
 
-    void notifyOnPause(final Fragment Fragment) {
+    void notifyOnPause(final Fragment fragment) {
         synchronized (mOnPauseListeners){
             for(Receiver<Fragment> r : mOnPauseListeners){
-                r.accept(Fragment);
+                r.accept(fragment);
             }
         }
     }
 
-    void notifyOnStop(Fragment Fragment) {
+    void notifyOnStop(Fragment fragment) {
         synchronized (mOnStoppedListeners){
             for(Receiver<Fragment> r : mOnStoppedListeners){
-                r.accept(Fragment);
+                r.accept(fragment);
             }
         }
     }
 
     /**
      * Removes all listeners
-     * @param Fragment
+     * @param fragment
      */
-    void notifyOnDestroy(Fragment Fragment) {
+    void notifyOnDestroy(Fragment fragment) {
         synchronized (mOnDestroyedListeners){
             for(Receiver<Fragment> r : mOnDestroyedListeners){
-                r.accept(Fragment);
+                r.accept(fragment);
             }
         }
         mOnSaveInstanceStateListeners.clear();
@@ -113,5 +123,14 @@ class FragmentLifecycleManager implements IFragmentLifecycleManager {
         mOnPauseListeners.clear();
         mOnStoppedListeners.clear();
         mOnDestroyedListeners.clear();
+    }
+
+
+    public void notifyOnActivityCreated(LifecycleFragment fragment, Bundle savedInstanceState) {
+        synchronized (mOnActivityCreatedListeners){
+            for(Receiver<Fragment> r : mOnActivityCreatedListeners){
+                r.accept(fragment);
+            }
+        }
     }
 }

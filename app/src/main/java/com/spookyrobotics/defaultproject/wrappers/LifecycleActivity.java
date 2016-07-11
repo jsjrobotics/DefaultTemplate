@@ -1,23 +1,25 @@
-package com.spookyrobotics.defaultproject.nonCompat.wrappers;
+package com.spookyrobotics.defaultproject.wrappers;
 
-import android.app.Fragment;
+import android.app.Activity;
 import android.os.Bundle;
 
-import com.spookyrobotics.defaultproject.nonCompat.wrappers.interfaces.ILifecycleFragment;
+import com.spookyrobotics.defaultproject.wrappers.interfaces.IActivityLifecycleManager;
+import com.spookyrobotics.defaultproject.wrappers.interfaces.ILifecycleActivity;
 
-public abstract class LifecycleFragment extends Fragment{
-    protected FragmentLifecycleManager mLifecycleManager = new FragmentLifecycleManager();
 
-    public final FragmentLifecycleManager getLifecycle(){
+public abstract class LifecycleActivity extends Activity{
+    protected ActivityLifecycleManager mLifecycleManager = new ActivityLifecycleManager();
+
+    public final IActivityLifecycleManager getLifecycle(){
         return mLifecycleManager;
     }
 
-    protected abstract ILifecycleFragment getLifecycleFragment();
+    protected abstract ILifecycleActivity getLifecycleActivity();
 
     @Override
     public final void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        getLifecycleFragment().onCreate(this, savedInstanceState);
+        getLifecycleActivity().onCreate(this, savedInstanceState);
     }
 
     @Override
