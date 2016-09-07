@@ -1,7 +1,8 @@
 package com.spookyrobotics.example;
 
-import com.spookyrobotics.defaultproject.lifecycle.wrappers.LifecycleActivity;
-import com.spookyrobotics.defaultproject.lifecycle.wrappers.interfaces.ILifecycleActivity;
+
+import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.interfaces.ILifecycleActivity;
+import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.LifecycleActivity;
 
 public class ExampleActivityWrapper extends LifecycleActivity {
     private ExampleActivity mActivity = new ExampleActivity();

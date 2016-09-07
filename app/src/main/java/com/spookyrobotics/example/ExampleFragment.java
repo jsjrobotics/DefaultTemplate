@@ -5,7 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.spookyrobotics.defaultproject.lifecycle.DefaultLifecycleFragment;
+import com.jsjrobotics.defaultTemplate.lifecycle.DefaultLifecycleFragment;
+
 
 public class ExampleFragment extends DefaultLifecycleFragment {
     @Override

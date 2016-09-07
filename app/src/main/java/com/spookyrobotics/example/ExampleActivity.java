@@ -4,15 +4,16 @@ package com.spookyrobotics.example;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.spookyrobotics.defaultproject.lifecycle.DefaultLifecycleActivity;
-import com.spookyrobotics.defaultproject.lifecycle.NavigationManager;
-import com.spookyrobotics.defaultproject.lifecycle.wrappers.DefaultFragmentWrapper;
+import com.jsjrobotics.defaultTemplate.lifecycle.DefaultLifecycleActivity;
+import com.jsjrobotics.defaultTemplate.lifecycle.NavigationManager;
+import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.DefaultFragmentWrapper;
+
 
 public class ExampleActivity extends DefaultLifecycleActivity {
     private static final String EXAMPLE_FRAGMENT_TAG = "example_fragment_tag";
 
     @Override
-    public void onCreate(Activity activity, Bundle savedInstanceState) {
+    public void onCreateNoView(Activity activity) {
         activity.setContentView(R.layout.activity_main);
         NavigationManager.displayFragment(
                 activity,
@@ -20,5 +21,10 @@ public class ExampleActivity extends DefaultLifecycleActivity {
                 DefaultFragmentWrapper.instantiante(ExampleFragment.class),
                 EXAMPLE_FRAGMENT_TAG,
                 null);
+    }
+
+    @Override
+    public void onCreateViewExists(Activity activity, Bundle savedInstanceState) {
+        activity.setContentView(R.layout.activity_main);
     }
 }
