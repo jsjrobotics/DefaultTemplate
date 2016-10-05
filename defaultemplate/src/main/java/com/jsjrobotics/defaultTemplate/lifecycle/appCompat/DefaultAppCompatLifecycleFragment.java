@@ -7,9 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.interfaces.ILifecycleFragment;
+import com.jsjrobotics.defaultTemplate.lifecycle.functional.Supplier;
 
-public abstract class DefaultLifecycleFragment implements ILifecycleFragment {
+public abstract class DefaultAppCompatLifecycleFragment implements ILifecycleFragment {
 
+
+    @Override
+    public void onActivityCreated(Fragment fragment, Bundle bundle){
+
+    }
 
     @Override
     public void onCreateNoView(Fragment fragment) {

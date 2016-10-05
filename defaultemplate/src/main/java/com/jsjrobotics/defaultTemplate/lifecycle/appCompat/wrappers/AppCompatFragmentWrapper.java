@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.interfaces.ILifecycleFragment;
 
-public abstract class LifecycleFragment extends Fragment {
+public abstract class AppCompatFragmentWrapper extends Fragment {
 
     protected abstract ILifecycleFragment getLifecycleFragment();
 

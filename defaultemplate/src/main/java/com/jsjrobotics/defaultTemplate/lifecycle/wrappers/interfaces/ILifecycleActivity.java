@@ -2,6 +2,7 @@ package com.jsjrobotics.defaultTemplate.lifecycle.wrappers.interfaces;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 
 public interface ILifecycleActivity {
     void onCreateNoView(Activity activity);
@@ -16,4 +17,5 @@ public interface ILifecycleActivity {
     void onStop(Activity activity);
 
     void onDestroy(Activity activity);
+    @LayoutRes int getLayoutXml();
 }

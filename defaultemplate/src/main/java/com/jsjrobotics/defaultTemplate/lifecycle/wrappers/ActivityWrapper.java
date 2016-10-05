@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.interfaces.ILifecycleActivity;
 
 
-public abstract class LifecycleActivity extends Activity{
+public abstract class ActivityWrapper extends Activity{
 
 
     protected abstract ILifecycleActivity getLifecycleActivity();

@@ -5,15 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.interfaces.ILifecycleActivity;
 
-public class DefaultLifecycleActivity implements ILifecycleActivity{
+public abstract class DefaultAppCompatLifecycleActivity implements ILifecycleActivity{
     @Override
     public void onCreateNoView(AppCompatActivity activity){
-
+        activity.setContentView(getLayoutXml());
     }
 
     @Override
     public void onCreateViewExists(AppCompatActivity activity, Bundle savedInstanceState) {
-
+        activity.setContentView(getLayoutXml());
     }
 
     @Override

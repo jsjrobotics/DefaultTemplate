@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.LifecycleFragment;
-
 public interface ILifecycleFragment {
     void onCreateNoView(Fragment fragment);
     void onCreateViewExists(Fragment fragment, Bundle savedInstanceState);

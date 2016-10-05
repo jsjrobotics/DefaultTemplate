@@ -6,14 +6,14 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.LifecycleActivity;
+import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.ActivityWrapper;
 
 public class NavigationManager {
     public static final String ACTIVITY_EXTRA = "activity_extras";
     public static final String FRAGMENT_EXTRA = "fragment_extras";
 
 
-    public static void launchActivity(Activity activity, Class<? extends LifecycleActivity> activityClass, Bundle activityExtras, boolean finish) {
+    public static void launchActivity(Activity activity, Class<? extends ActivityWrapper> activityClass, Bundle activityExtras, boolean finish) {
         Intent intent = new Intent(activity, activityClass);
         intent.putExtra(ACTIVITY_EXTRA, activityExtras);
         activity.startActivity(intent);

@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.interfaces.ILifecycleActivity;
 
-public abstract class LifecycleActivity extends AppCompatActivity {
+public abstract class AppCompatActivityWrapper extends AppCompatActivity {
     
     protected abstract ILifecycleActivity getLifecycleActivity();
 

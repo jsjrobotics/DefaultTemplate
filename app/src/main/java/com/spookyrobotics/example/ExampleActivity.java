@@ -2,11 +2,10 @@ package com.spookyrobotics.example;
 
 
 import android.app.Activity;
-import android.os.Bundle;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.DefaultLifecycleActivity;
 import com.jsjrobotics.defaultTemplate.lifecycle.NavigationManager;
-import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.DefaultFragmentWrapper;
+import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.FragmentInflater;
 
 
 public class ExampleActivity extends DefaultLifecycleActivity {
@@ -14,17 +13,18 @@ public class ExampleActivity extends DefaultLifecycleActivity {
 
     @Override
     public void onCreateNoView(Activity activity) {
-        activity.setContentView(R.layout.activity_main);
+        super.onCreateNoView(activity);
         NavigationManager.displayFragment(
                 activity,
                 R.id.content_frame,
-                DefaultFragmentWrapper.instantiante(ExampleFragment.class),
+                FragmentInflater.instantiante(ExampleFragment.class),
                 EXAMPLE_FRAGMENT_TAG,
                 null);
     }
 
+
     @Override
-    public void onCreateViewExists(Activity activity, Bundle savedInstanceState) {
-        activity.setContentView(R.layout.activity_main);
+    public int getLayoutXml() {
+        return R.layout.activity_main;
     }
 }

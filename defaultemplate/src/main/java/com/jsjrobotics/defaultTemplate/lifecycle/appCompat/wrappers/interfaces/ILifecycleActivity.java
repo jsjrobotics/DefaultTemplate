@@ -1,6 +1,7 @@
 package com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.interfaces;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
 
 public interface ILifecycleActivity {
@@ -11,4 +12,6 @@ public interface ILifecycleActivity {
     void onPause(AppCompatActivity activity);
     void onStop(AppCompatActivity activity);
     void onDestroy(AppCompatActivity activity);
+    @LayoutRes int getLayoutXml();
+
 }
