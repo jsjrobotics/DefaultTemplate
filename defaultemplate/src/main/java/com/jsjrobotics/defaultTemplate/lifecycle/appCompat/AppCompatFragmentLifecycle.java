@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.interfaces.ILifecycleFragment;
 import com.jsjrobotics.defaultTemplate.lifecycle.functional.Supplier;
 
-public abstract class DefaultAppCompatLifecycleFragment implements ILifecycleFragment {
+public abstract class AppCompatFragmentLifecycle implements ILifecycleFragment {
 
 
     @Override

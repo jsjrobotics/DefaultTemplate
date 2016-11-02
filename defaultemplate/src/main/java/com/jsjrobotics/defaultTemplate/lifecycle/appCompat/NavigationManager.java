@@ -7,14 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.AppCompatActivityWrapper;
+import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.DefaultAppCompatActivity;
 
 public class NavigationManager {
     public static final String ACTIVITY_EXTRA = "activity_extras";
     public static final String FRAGMENT_EXTRA = "fragment_extras";
 
 
-    public static void launchActivity(Activity activity, Class<? extends AppCompatActivityWrapper> activityClass, Bundle activityExtras, boolean finish) {
+    public static void launchActivity(Activity activity, Class<? extends DefaultAppCompatActivity> activityClass, Bundle activityExtras, boolean finish) {
         Intent intent = new Intent(activity, activityClass);
         intent.putExtra(ACTIVITY_EXTRA, activityExtras);
         activity.startActivity(intent);

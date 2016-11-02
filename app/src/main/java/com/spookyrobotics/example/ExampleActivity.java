@@ -3,12 +3,11 @@ package com.spookyrobotics.example;
 
 import android.app.Activity;
 
-import com.jsjrobotics.defaultTemplate.lifecycle.DefaultLifecycleActivity;
+import com.jsjrobotics.defaultTemplate.lifecycle.ActivityLifecycle;
 import com.jsjrobotics.defaultTemplate.lifecycle.NavigationManager;
-import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.FragmentInflater;
 
 
-public class ExampleActivity extends DefaultLifecycleActivity {
+public class ExampleActivity extends ActivityLifecycle {
     private static final String EXAMPLE_FRAGMENT_TAG = "example_fragment_tag";
 
     @Override
@@ -17,7 +16,7 @@ public class ExampleActivity extends DefaultLifecycleActivity {
         NavigationManager.displayFragment(
                 activity,
                 R.id.content_frame,
-                FragmentInflater.instantiante(ExampleFragment.class),
+                new ExampleFragment(),
                 EXAMPLE_FRAGMENT_TAG,
                 null);
     }

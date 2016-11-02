@@ -6,48 +6,52 @@ import android.os.Bundle;
 import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.interfaces.ILifecycleActivity;
 
 
-public abstract class ActivityWrapper extends Activity{
+public abstract class DefaultActivity extends Activity{
 
 
-    protected abstract ILifecycleActivity getLifecycleActivity();
+    private ILifecycleActivity mLifecycleActivity;
+
+    protected abstract ILifecycleActivity buildLifecycleActivity();
 
     @Override
     public final void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        mLifecycleActivity = buildLifecycleActivity();
+        setContentView(mLifecycleActivity.getLayoutXml());
         if (savedInstanceState == null){
-            getLifecycleActivity().onCreateNoView(this);
+            mLifecycleActivity.onCreateNoView(this);
         } else {
-            getLifecycleActivity().onCreateViewExists(this, savedInstanceState);
+            mLifecycleActivity.onCreateViewExists(this, savedInstanceState);
         }
     }
 
     @Override
     public final void onStart(){
         super.onStart();
-        getLifecycleActivity().onStart(this);
+        mLifecycleActivity.onStart(this);
     }
 
     @Override
     public final void onResume(){
         super.onResume();
-        getLifecycleActivity().onResume(this);
+        mLifecycleActivity.onResume(this);
     }
 
     @Override
     public final void onPause(){
         super.onPause();
-        getLifecycleActivity().onPause(this);
+        mLifecycleActivity.onPause(this);
     }
 
     @Override
     public final void onStop(){
         super.onStop();
-        getLifecycleActivity().onStop(this);
+        mLifecycleActivity.onStop(this);
     }
 
     @Override
     public final void onDestroy(){
         super.onDestroy();
-        getLifecycleActivity().onDestroy(this);
+        mLifecycleActivity.onDestroy(this);
     }
 }

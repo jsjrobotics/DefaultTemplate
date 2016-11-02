@@ -9,58 +9,61 @@ import android.view.ViewGroup;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.interfaces.ILifecycleFragment;
 
-public abstract class AppCompatFragmentWrapper extends Fragment {
+public abstract class DefaultAppCompatFragment extends Fragment {
 
-    protected abstract ILifecycleFragment getLifecycleFragment();
+    private ILifecycleFragment mLifecycleFragment;
+
+    protected abstract ILifecycleFragment buildLifecycleFragment();
 
     @Override
     public final void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        mLifecycleFragment = buildLifecycleFragment();
         if (savedInstanceState == null){
-            getLifecycleFragment().onCreateNoView(this);
+            mLifecycleFragment.onCreateNoView(this);
         } else {
-            getLifecycleFragment().onCreateViewExists(this, savedInstanceState);
+            mLifecycleFragment.onCreateViewExists(this, savedInstanceState);
         }
     }
 
     @Override
     public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        return getLifecycleFragment().createView(this, inflater,container,savedInstanceState);
+        return mLifecycleFragment.createView(this, inflater,container,savedInstanceState);
     }
 
     @Override
     public final void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-        getLifecycleFragment().onActivityCreated(this, savedInstanceState);
+        mLifecycleFragment.onActivityCreated(this, savedInstanceState);
     }
 
     @Override
     public final void onStart(){
         super.onStart();
-        getLifecycleFragment().onStart(this);
+        mLifecycleFragment.onStart(this);
     }
 
     @Override
     public final void onResume(){
         super.onResume();
-        getLifecycleFragment().onResume(this);
+        mLifecycleFragment.onResume(this);
     }
 
     @Override
     public final void onPause(){
         super.onPause();
-        getLifecycleFragment().onPause(this);
+        mLifecycleFragment.onPause(this);
     }
 
     @Override
     public final void onStop(){
         super.onStop();
-        getLifecycleFragment().onStop(this);
+        mLifecycleFragment.onStop(this);
     }
 
     @Override
     public final void onDestroy(){
         super.onDestroy();
-        getLifecycleFragment().onDestroy(this);
+        mLifecycleFragment.onDestroy(this);
     }
 }

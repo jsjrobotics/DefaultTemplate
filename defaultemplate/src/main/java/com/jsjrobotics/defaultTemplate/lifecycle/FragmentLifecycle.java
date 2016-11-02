@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.interfaces.ILifecycleFragment;
 
-public abstract class DefaultLifecycleFragment implements ILifecycleFragment {
+public abstract class FragmentLifecycle implements ILifecycleFragment {
 
     @Override
     public void onActivityCreated(Fragment fragment, Bundle savedInstanceState){
