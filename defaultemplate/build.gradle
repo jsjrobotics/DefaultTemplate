@@ -23,3 +23,16 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.0'
 }
+
+task deleteJar(type: Delete) {
+    delete 'libs/spookyTemplate.jar'
+}
+
+task createJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('libs/')
+    include('classes.jar')
+    rename('classes.jar', 'spookyTemplate.jar')
+}
+
+createJar.dependsOn(deleteJar, build)
