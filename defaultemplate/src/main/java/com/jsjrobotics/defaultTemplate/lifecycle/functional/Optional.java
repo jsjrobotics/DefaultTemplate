@@ -1,7 +1,6 @@
 package com.jsjrobotics.defaultTemplate.lifecycle.functional;
 
 public class Optional<T> {
-    public static final Optional EMPTY = new Optional<>(null);
     private final T mData;
 
     private Optional(T value) {
@@ -10,7 +9,7 @@ public class Optional<T> {
 
     public static <R> Optional<R> of(R value){
         if(value == null){
-            return Optional.EMPTY;
+            return empty();
         }
         return new Optional<>(value);
     }
@@ -30,12 +29,24 @@ public class Optional<T> {
 
     public static <T> Optional<T> ofNullable(T o) {
         if(o == null){
-            return Optional.EMPTY;
+            return new Optional<T>(null);
         }
         return Optional.of(o);
     }
 
     public boolean isPresent(){
         return mData != null;
+    }
+
+    public static <T> Optional<T> empty() {
+        return Optional.ofNullable(null);
+    }
+
+
+    public T or(T other) {
+        if (isPresent()){
+            return get();
+        }
+        return other;
     }
 }
