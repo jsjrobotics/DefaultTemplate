@@ -141,6 +141,11 @@ public class Downloader<T> {
         boolean firstParam = true;
         StringBuilder builder = new StringBuilder();
         for(String key : parameters.keySet()){
+            if(firstParam){
+                firstParam = false;
+            } else {
+                builder.append("&");
+            }
             String urlKey;
             String urlValue;
             try {
@@ -156,11 +161,7 @@ public class Downloader<T> {
                 continue;
             }
             builder.append(urlKey).append("=").append(urlValue);
-            if(firstParam){
-                firstParam = false;
-            } else {
-                builder.append("&");
-            }
+
         }
         return builder.toString();
     }
