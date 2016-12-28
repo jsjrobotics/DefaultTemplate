@@ -1,29 +1,47 @@
 package com.jsjrobotics.defaultTemplate.prioritydownloader;
 
+import android.support.v4.app.Fragment;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.ImageView;
 
+import com.jsjrobotics.defaultTemplate.R;
+import com.jsjrobotics.defaultTemplate.lifecycle.DefaultLifecycleFragment;
+import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.DefaultAppCompatLifecycleFragment;
 import com.jsjrobotics.defaultTemplate.lifecycle.functional.Receiver;
 import com.jsjrobotics.defaultTemplate.prioritydownloader.downloader.DownloadRequest;
 import com.jsjrobotics.defaultTemplate.prioritydownloader.downloader.InputStreamReceiver;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 public class ImageUtils {
     private static final int BUFFER_SIZE = 1024;
+    private static final int FILE_IMAGE_HEIGHT_PX = 1200;
+    private static final int FILE_IMAGE_WIDTH_PX = 1600;
+    private static final int TWENTY_MB = 20 * 1024 * 1024;
+    private static final String TAG = "ImageUtils";
 
-    public static void downloadAndDisplayImage(final Fragment fragment, final PriorityDownloader downloader, final ImageView photo, String url) {
-        final DownloadRequest request= new DownloadRequest<>(
+    public static void downloadAndDisplayImage(final Fragment fragment, final PriorityDownloader downloader, final ImageView photo, final String url, final int downloadTagKey) {
+        final DownloadRequest<String> request= new DownloadRequest<>(
                 new InputStreamReceiver() {
                     @Override
                     public void receiveInputStream(InputStream stream) {
-                        byte[] data = inputStreamToByteArray(stream);
-                        BitmapFactory.Options sourceAttributes = readImageAttributes(data);
+                        if (stream == null) {
+                            return;
+                        }
+                        BufferedInputStream input = new BufferedInputStream(stream);
+                        BitmapFactory.Options sourceAttributes = readImageAttributes(input);
+                        if (sourceAttributes == null){
+                            return;
+                        }
                         int inSampleSize = 2;
                         if(photo.getHeight() == 0 || photo.getWidth() == 0){
                             Log.e("DownloadImage", "Can't downscale image because image size not set");
@@ -31,12 +49,14 @@ public class ImageUtils {
                             inSampleSize = calculateInSampleSize(sourceAttributes, photo.getWidth(), photo.getHeight());
 
                         }
-                        final Bitmap bitmap = decodeBitmapFromStream(sourceAttributes, inSampleSize, data);
-                        if(bitmap != null && fragment.getActivity() != null){
-                            fragment.getActivity().runOnUiThread(new Runnable() {
+                        final Bitmap bitmap = decodeBitmapFromStream(sourceAttributes, inSampleSize, input);
+                        if(bitmap != null ){
+                            DefaultAppCompatLifecycleFragment.runOnUiThread(fragment, new Runnable() {
                                 @Override
                                 public void run() {
-                                    photo.setImageBitmap(bitmap);
+                                    if (photo.getTag(downloadTagKey).equals(url)) {
+                                        photo.setImageBitmap(bitmap);
+                                    }
                                 }
                             });
                         }
@@ -49,6 +69,49 @@ public class ImageUtils {
         photo.post(new Runnable() {
             @Override
             public void run() {
+                photo.setTag(downloadTagKey, url);
+                photo.setImageDrawable(null);
+                downloader.queueRequest(request);
+            }
+        });
+    }
+
+
+
+    public static void downloadAndDisplayImage(final Receiver<Bitmap> receiver, final PriorityDownloader downloader, final ImageView photo, final String url) {
+        final DownloadRequest request= new DownloadRequest<>(
+                new InputStreamReceiver() {
+                    @Override
+                    public void receiveInputStream(InputStream stream) {
+                        if (stream == null) {
+                            return;
+                        }
+                        BufferedInputStream input = new BufferedInputStream(stream);
+                        BitmapFactory.Options sourceAttributes = readImageAttributes(input);
+                        if (sourceAttributes == null){
+                            return;
+                        }
+                        int inSampleSize = 2;
+                        if(photo.getHeight() == 0 || photo.getWidth() == 0){
+                            Log.e("DownloadImage", "Can't downscale image because image size not set");
+                        } else {
+                            inSampleSize = calculateInSampleSize(sourceAttributes, photo.getWidth(), photo.getHeight());
+
+                        }
+                        final Bitmap bitmap = decodeBitmapFromStream(sourceAttributes, inSampleSize, stream);
+                        if(bitmap != null){
+                            receiver.accept(bitmap);
+                        }
+                    }
+                },
+                url,
+                Priorities.MEDIUM,
+                url
+        );
+        photo.post(new Runnable() {
+            @Override
+            public void run() {
+                photo.setImageDrawable(null);
                 downloader.queueRequest(request);
             }
         });
@@ -59,8 +122,11 @@ public class ImageUtils {
                 new InputStreamReceiver() {
                     @Override
                     public void receiveInputStream(InputStream stream) {
-                        byte[] data = inputStreamToByteArray(stream);
-                        BitmapFactory.Options sourceAttributes = readImageAttributes(data);
+                        BufferedInputStream input = new BufferedInputStream(stream);
+                        BitmapFactory.Options sourceAttributes = readImageAttributes(input);
+                        if (sourceAttributes == null){
+                            return;
+                        }
                         int inSampleSize = 2;
                         if(desiredWidth == 0 || desiredHeight == 0){
                             Log.e("DownloadImage", "Can't downscale image because image size not set");
@@ -68,7 +134,7 @@ public class ImageUtils {
                             inSampleSize = calculateInSampleSize(sourceAttributes, desiredWidth, desiredHeight);
 
                         }
-                        final Bitmap bitmap = decodeBitmapFromStream(sourceAttributes, inSampleSize, data);
+                        final Bitmap bitmap = decodeBitmapFromStream(sourceAttributes, inSampleSize, stream);
                         if(bitmap != null && fragment.getActivity() != null){
                             receiver.accept(bitmap);
                         }
@@ -82,13 +148,42 @@ public class ImageUtils {
     }
 
 
-    private static Bitmap decodeBitmapFromStream(BitmapFactory.Options sourceAttributes, int inSampleSize, byte[] data) {
+    private static Bitmap decodeBitmapFromByteArray(BitmapFactory.Options sourceAttributes, int inSampleSize, byte[] data) {
         sourceAttributes.inSampleSize = inSampleSize;
         sourceAttributes.inJustDecodeBounds = false;
         return BitmapFactory.decodeByteArray(data,0,data.length, sourceAttributes);
     }
 
+    private static Bitmap decodeBitmapFromStream(BitmapFactory.Options sourceAttributes, int inSampleSize, InputStream data) {
+        sourceAttributes.inSampleSize = inSampleSize;
+        sourceAttributes.inJustDecodeBounds = false;
+        try {
+            return BitmapFactory.decodeStream(data,null, sourceAttributes);
+        } catch (OutOfMemoryError error){
+            Log.e(TAG,"Out of memory decodeBitmapFromStream");
+            return null;
+        }
+    }
+
+    private static BitmapFactory.Options readImageAttributes(BufferedInputStream stream) {
+        stream.mark(TWENTY_MB);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(stream, null, options);
+        try {
+            stream.reset();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG,"Failed to decode image");
+            return null;
+        }
+        return options;
+    }
+
     private static byte[] inputStreamToByteArray(InputStream stream) {
+        if(stream == null){
+            return null;
+        }
         byte[] buffer = new byte[BUFFER_SIZE];
         byte[] result = new byte[0];
         ArrayList<Byte> data = new ArrayList<>();
@@ -141,6 +236,24 @@ public class ImageUtils {
         }
 
         return inSampleSize;
+    }
+
+    public static Bitmap inflateImageFromFile(Context context, String filePath) {
+        InputStream stream;
+        try {
+            stream = new FileInputStream(filePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        byte[] data = inputStreamToByteArray(stream);
+        BitmapFactory.Options sourceAttributes = readImageAttributes(data);
+        int inSampleSize = calculateInSampleSize(sourceAttributes, FILE_IMAGE_WIDTH_PX, FILE_IMAGE_HEIGHT_PX);
+        return decodeBitmapFromByteArray(sourceAttributes, inSampleSize, data);
+    }
+
+    private static float dpToPixels(Context context, int valueInDp) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp , context.getResources().getDisplayMetrics());
     }
 
 }

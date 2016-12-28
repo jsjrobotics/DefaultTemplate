@@ -3,11 +3,14 @@ package com.jsjrobotics.defaultTemplate.lifecycle.appCompat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.interfaces.ILifecycleFragment;
+import com.jsjrobotics.defaultTemplate.lifecycle.functional.Optional;
+import com.jsjrobotics.defaultTemplate.lifecycle.functional.Receiver;
 import com.jsjrobotics.defaultTemplate.lifecycle.functional.Supplier;
 
 public abstract class DefaultAppCompatLifecycleFragment extends Fragment implements ILifecycleFragment {
@@ -96,5 +99,27 @@ public abstract class DefaultAppCompatLifecycleFragment extends Fragment impleme
     @Override
     public void onDestroy(Fragment fragment) {
 
+    }
+
+    public static void ifAttached(Fragment fragment, Receiver<FragmentActivity> receiver){
+        Optional.ofNullable(fragment.getActivity()).ifPresent(receiver);
+    }
+
+    public static void runOnUiThread(Fragment fragment, final Runnable runnable){
+        ifAttached(fragment, new Receiver<FragmentActivity>() {
+            @Override
+            public void accept(FragmentActivity activity) {
+                activity.runOnUiThread(runnable);
+            }
+        });
+    }
+
+    public Supplier<Fragment> buildFragmentSupplier(final Fragment fragment){
+        return new Supplier<Fragment>() {
+            @Override
+            public Fragment get() {
+                return fragment;
+            }
+        };
     }
 }

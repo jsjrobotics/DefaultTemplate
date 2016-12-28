@@ -24,7 +24,7 @@ public abstract class FragmentWrapper extends Fragment{
 
     @Override
     public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        return getLifecycleFragment().createView(inflater,container,savedInstanceState);
+        return getLifecycleFragment().createView(this, inflater,container,savedInstanceState);
     }
 
     @Override

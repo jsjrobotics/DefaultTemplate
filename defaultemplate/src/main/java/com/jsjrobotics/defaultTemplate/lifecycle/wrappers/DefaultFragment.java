@@ -27,7 +27,7 @@ public abstract class DefaultFragment extends Fragment{
 
     @Override
     public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        return mLifecycleFragment.createView(inflater,container,savedInstanceState);
+        return mLifecycleFragment.createView(this, inflater,container,savedInstanceState);
     }
 
     @Override

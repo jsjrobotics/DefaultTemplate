@@ -38,4 +38,16 @@ public class Optional<T> {
     public boolean isPresent(){
         return mData != null;
     }
+
+    public static <T> Optional<T> empty() {
+        return Optional.ofNullable(null);
+    }
+
+
+    public T or(T other) {
+        if (isPresent()){
+            return get();
+        }
+        return other;
+    }
 }

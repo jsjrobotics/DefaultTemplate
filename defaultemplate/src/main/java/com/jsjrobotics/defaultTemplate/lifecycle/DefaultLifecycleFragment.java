@@ -1,8 +1,15 @@
 package com.jsjrobotics.defaultTemplate.lifecycle;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.jsjrobotics.defaultTemplate.lifecycle.functional.Optional;
+import com.jsjrobotics.defaultTemplate.lifecycle.functional.Receiver;
+import com.jsjrobotics.defaultTemplate.lifecycle.functional.Supplier;
 import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.interfaces.ILifecycleFragment;
 
 public abstract class DefaultLifecycleFragment extends Fragment implements ILifecycleFragment {
@@ -64,6 +71,11 @@ public abstract class DefaultLifecycleFragment extends Fragment implements ILife
     }
 
     @Override
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return createView(this, inflater, container, savedInstanceState);
+    }
+
+    @Override
     public void onStart(Fragment fragment) {
 
     }
@@ -86,5 +98,27 @@ public abstract class DefaultLifecycleFragment extends Fragment implements ILife
     @Override
     public void onDestroy(Fragment fragment) {
 
+    }
+
+    public static void ifAttached(Fragment fragment, Receiver<Activity> receiver){
+        Optional.ofNullable(fragment.getActivity()).ifPresent(receiver);
+    }
+
+    public static void runOnUiThread(Fragment fragment, final Runnable runnable){
+        ifAttached(fragment, new Receiver<Activity>() {
+            @Override
+            public void accept(Activity activity) {
+                activity.runOnUiThread(runnable);
+            }
+        });
+    }
+
+    public Supplier<Fragment> buildFragmentSupplier(final Fragment fragment){
+        return new Supplier<Fragment>() {
+            @Override
+            public Fragment get() {
+                return fragment;
+            }
+        };
     }
 }

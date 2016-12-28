@@ -15,7 +15,7 @@ public interface ILifecycleFragment {
     void onPause(Fragment fragment);
     void onStop(Fragment fragment);
     void onDestroy(Fragment fragment);
-    View createView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
+    View createView(Fragment fragment, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState);
 
     void onActivityCreated(Fragment fragment, Bundle savedInstanceState);
 }
