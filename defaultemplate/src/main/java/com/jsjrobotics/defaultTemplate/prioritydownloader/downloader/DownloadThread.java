@@ -59,8 +59,14 @@ public class DownloadThread<T> extends Thread {
                 InputStreamReceiver receiver = request.getInputStreamReceiver();
                 if(receiver != null){
                     try {
-                        receiver.receiveInputStream(urlConnection.getInputStream());
-                    } catch (IOException e) {
+                        if (urlConnection != null) {
+                            receiver.receiveInputStream(urlConnection.getInputStream());
+                        }
+                        else {
+                            Log.e(TAG, "Url connection is null");
+                            Thread.dumpStack();
+                        }
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     Downloader.closeUrlConnection(urlConnection);

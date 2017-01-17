@@ -1,15 +1,13 @@
 package com.jsjrobotics.defaultTemplate.prioritydownloader;
 
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.ImageView;
 
-import com.jsjrobotics.defaultTemplate.R;
-import com.jsjrobotics.defaultTemplate.lifecycle.DefaultLifecycleFragment;
 import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.DefaultAppCompatLifecycleFragment;
 import com.jsjrobotics.defaultTemplate.lifecycle.functional.Receiver;
 import com.jsjrobotics.defaultTemplate.prioritydownloader.downloader.DownloadRequest;

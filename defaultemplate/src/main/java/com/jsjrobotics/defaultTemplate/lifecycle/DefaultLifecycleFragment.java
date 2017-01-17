@@ -15,6 +15,8 @@ import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.interfaces.ILifecycleF
 public abstract class DefaultLifecycleFragment extends Fragment implements ILifecycleFragment {
 
 
+    private boolean mCalledParent = false;
+
     @Override
     public final void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -28,31 +30,41 @@ public abstract class DefaultLifecycleFragment extends Fragment implements ILife
     @Override
     public final void onStart(){
         super.onStart();
+        resetCalledParent();
         onStart(this);
+        checkCalledParent();
     }
 
     @Override
     public final void onResume(){
         super.onResume();
+        resetCalledParent();
         onResume(this);
+        checkCalledParent();
     }
 
     @Override
     public final void onPause(){
         super.onPause();
+        resetCalledParent();
         onPause(this);
+        checkCalledParent();
     }
 
     @Override
     public final void onStop(){
         super.onStop();
+        resetCalledParent();
         onStop(this);
+        checkCalledParent();
     }
 
     @Override
     public final void onDestroy(){
         super.onDestroy();
+        resetCalledParent();
         onDestroy(this);
+        checkCalledParent();
     }
 
     @Override
@@ -77,27 +89,42 @@ public abstract class DefaultLifecycleFragment extends Fragment implements ILife
 
     @Override
     public void onStart(Fragment fragment) {
-
+        setCalledParent();
     }
 
     @Override
     public void onResume(Fragment fragment) {
-
+        setCalledParent();
     }
 
     @Override
     public void onPause(Fragment fragment) {
-
+        setCalledParent();
     }
 
     @Override
     public void onStop(Fragment fragment) {
-
+        setCalledParent();
     }
 
     @Override
     public void onDestroy(Fragment fragment) {
+        setCalledParent();
+    }
 
+    private void setCalledParent() {
+        mCalledParent = true;
+    }
+
+    private void resetCalledParent() {
+        mCalledParent = false;
+    }
+
+    private void checkCalledParent() {
+        if (mCalledParent != true) {
+            throw new IllegalStateException("Must call through parents super method");
+        }
+        mCalledParent = false;
     }
 
     public static void ifAttached(Fragment fragment, Receiver<Activity> receiver){
