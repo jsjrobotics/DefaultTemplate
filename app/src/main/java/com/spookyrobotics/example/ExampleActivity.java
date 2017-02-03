@@ -4,7 +4,7 @@ package com.spookyrobotics.example;
 import android.app.Activity;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.DefaultLifecycleActivity;
-import com.jsjrobotics.defaultTemplate.lifecycle.NavigationManager;
+import com.jsjrobotics.defaultTemplate.lifecycle.AppCompatNavigationManager;
 
 
 public class ExampleActivity extends DefaultLifecycleActivity {
@@ -13,7 +13,7 @@ public class ExampleActivity extends DefaultLifecycleActivity {
     @Override
     public void onCreateNoView(Activity activity) {
         super.onCreateNoView(activity);
-        NavigationManager.displayFragment(
+        AppCompatNavigationManager.displayFragment(
                 activity,
                 R.id.content_frame,
                 new ExampleFragment(),

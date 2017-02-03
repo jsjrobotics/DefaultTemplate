@@ -23,7 +23,7 @@ public abstract class DefaultLifecycleFragment extends Fragment implements ILife
         if (savedInstanceState == null){
             onCreateNoView(this);
         } else {
-            onCreate(savedInstanceState);
+            onCreateViewExists(this, savedInstanceState);
         }
     }
 
