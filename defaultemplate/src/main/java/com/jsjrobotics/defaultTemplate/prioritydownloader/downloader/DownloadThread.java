@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.functional.Receiver;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 
 /**

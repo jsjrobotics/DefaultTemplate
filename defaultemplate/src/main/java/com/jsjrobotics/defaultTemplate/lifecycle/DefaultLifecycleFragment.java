@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.functional.Optional;
 import com.jsjrobotics.defaultTemplate.lifecycle.functional.Receiver;
-import com.jsjrobotics.defaultTemplate.lifecycle.functional.Supplier;
+import com.jsjrobotics.defaultTemplate.lifecycle.functional.WeakReferenceSupplier;
 import com.jsjrobotics.defaultTemplate.lifecycle.wrappers.interfaces.ILifecycleFragment;
 
 public abstract class DefaultLifecycleFragment extends Fragment implements ILifecycleFragment {
@@ -140,12 +140,7 @@ public abstract class DefaultLifecycleFragment extends Fragment implements ILife
         });
     }
 
-    public Supplier<Fragment> buildFragmentSupplier(final Fragment fragment){
-        return new Supplier<Fragment>() {
-            @Override
-            public Fragment get() {
-                return fragment;
-            }
-        };
+    public WeakReferenceSupplier<Fragment> buildFragmentSupplier(final Fragment fragment){
+        return new WeakReferenceSupplier<>(fragment);
     }
 }

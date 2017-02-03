@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.wrappers.AppCompatActivityWrapper;
-import com.jsjrobotics.defaultTemplate.lifecycle.functional.Optional;
 
-public class NavigationManager {
+public class AppCompatNavigationManager {
     public static final String ACTIVITY_EXTRA = "activity_extras";
     public static final String KEY_CONTENT_ID = "frame_layout_content_id";
 
@@ -57,7 +54,7 @@ public class NavigationManager {
     }
 
     private static void addActivityExtras(FragmentActivity activity, Fragment fragment) {
-        Bundle activityExtras = activity.getIntent().getBundleExtra(NavigationManager.ACTIVITY_EXTRA);
+        Bundle activityExtras = activity.getIntent().getBundleExtra(AppCompatNavigationManager.ACTIVITY_EXTRA);
         if (activityExtras == null) {
             return;
         }
