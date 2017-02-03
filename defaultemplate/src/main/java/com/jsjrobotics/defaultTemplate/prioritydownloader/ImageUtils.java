@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.jsjrobotics.defaultTemplate.lifecycle.appCompat.DefaultAppCompatLifecycleFragment;
 import com.jsjrobotics.defaultTemplate.lifecycle.functional.Receiver;
+import com.jsjrobotics.defaultTemplate.lifecycle.functional.WeakReferenceSupplier;
 import com.jsjrobotics.defaultTemplate.prioritydownloader.downloader.DownloadRequest;
 import com.jsjrobotics.defaultTemplate.prioritydownloader.downloader.InputStreamReceiver;
 
@@ -27,7 +28,13 @@ public class ImageUtils {
     private static final int TWENTY_MB = 20 * 1024 * 1024;
     private static final String TAG = "ImageUtils";
 
-    public static void downloadAndDisplayImage(final Fragment fragment, final PriorityDownloader downloader, final ImageView photo, final String url, final int downloadTagKey) {
+    public static void downloadAndDisplayImage(
+            final WeakReferenceSupplier<Fragment> fragment,
+            final PriorityDownloader downloader,
+            final WeakReferenceSupplier<ImageView> photoSupplier,
+            final String url,
+            final int downloadTagKey
+    ) {
         final DownloadRequest<String> request= new DownloadRequest<>(
                 new InputStreamReceiver() {
                     @Override
@@ -35,48 +42,68 @@ public class ImageUtils {
                         if (stream == null) {
                             return;
                         }
-                        BufferedInputStream input = new BufferedInputStream(stream);
-                        BitmapFactory.Options sourceAttributes = readImageAttributes(input);
+                        final BufferedInputStream input = new BufferedInputStream(stream);
+                        final BitmapFactory.Options sourceAttributes = readImageAttributes(input);
                         if (sourceAttributes == null){
                             return;
                         }
-                        int inSampleSize = 2;
-                        if(photo.getHeight() == 0 || photo.getWidth() == 0){
-                            Log.e("DownloadImage", "Can't downscale image because image size not set");
-                        } else {
-                            inSampleSize = calculateInSampleSize(sourceAttributes, photo.getWidth(), photo.getHeight());
 
+                        int inSampleSize = 2;
+                        if (photoSupplier.isPresent()) {
+                            int height = photoSupplier.value().getHeight();
+                            int width = photoSupplier.value().getWidth();
+                            if(height == 0 || width == 0){
+                                Log.e("DownloadImage", "Can't downscale image because image size not set");
+                            } else {
+                                inSampleSize = calculateInSampleSize(sourceAttributes, width, height);
+
+                            }
                         }
                         final Bitmap bitmap = decodeBitmapFromStream(sourceAttributes, inSampleSize, input);
                         if(bitmap != null ){
                             DefaultAppCompatLifecycleFragment.runOnUiThread(fragment, new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (photo.getTag(downloadTagKey).equals(url)) {
-                                        photo.setImageBitmap(bitmap);
-                                    }
+                                    photoSupplier.ifPresent(new Receiver<ImageView>() {
+                                        @Override
+                                        public void accept(ImageView photo) {
+                                            if (photo.getTag(downloadTagKey).equals(url)) {
+                                                photo.setImageBitmap(bitmap);
+                                            }
+                                        }
+                                    });
                                 }
                             });
                         }
                     }
+
                 },
                 url,
                 Priorities.MEDIUM,
                 url
         );
-        photo.post(new Runnable() {
+        photoSupplier.get().ifPresent(new Receiver<ImageView>() {
             @Override
-            public void run() {
-                photo.setTag(downloadTagKey, url);
-                photo.setImageDrawable(null);
-                downloader.queueRequest(request);
+            public void accept(final ImageView photo) {
+                photo.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        photo.setTag(downloadTagKey, url);
+                        photo.setImageDrawable(null);
+                        downloader.queueRequest(request);
+                    }
+                });
             }
         });
     }
 
 
 
-    public static void downloadAndDisplayImage(final Receiver<Bitmap> receiver, final PriorityDownloader downloader, final ImageView photo, final String url) {
+    public static void downloadAndDisplayImage(
+            final Receiver<Bitmap> receiver,
+            final PriorityDownloader downloader,
+            final WeakReferenceSupplier<ImageView> photoSupplier,
+            final String url) {
         final DownloadRequest request= new DownloadRequest<>(
                 new InputStreamReceiver() {
                     @Override
@@ -90,12 +117,17 @@ public class ImageUtils {
                             return;
                         }
                         int inSampleSize = 2;
-                        if(photo.getHeight() == 0 || photo.getWidth() == 0){
-                            Log.e("DownloadImage", "Can't downscale image because image size not set");
-                        } else {
-                            inSampleSize = calculateInSampleSize(sourceAttributes, photo.getWidth(), photo.getHeight());
+                        if (photoSupplier.get().isPresent()) {
+                            int height = photoSupplier.value().getHeight();
+                            int width = photoSupplier.value().getWidth();
+                            if(height == 0 || width == 0){
+                                Log.e("DownloadImage", "Can't downscale image because image size not set");
+                            } else {
+                                inSampleSize = calculateInSampleSize(sourceAttributes, width, height);
 
+                            }
                         }
+
                         final Bitmap bitmap = decodeBitmapFromStream(sourceAttributes, inSampleSize, stream);
                         if(bitmap != null){
                             receiver.accept(bitmap);
@@ -106,16 +138,21 @@ public class ImageUtils {
                 Priorities.MEDIUM,
                 url
         );
-        photo.post(new Runnable() {
+        photoSupplier.ifPresent(new Receiver<ImageView>() {
             @Override
-            public void run() {
-                photo.setImageDrawable(null);
-                downloader.queueRequest(request);
+            public void accept(final ImageView imageView) {
+                imageView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageView.setImageDrawable(null);
+                        downloader.queueRequest(request);
+                    }
+                });
             }
         });
     }
 
-    public static void downloadImage(final Fragment fragment, final Receiver<Bitmap> receiver, final PriorityDownloader downloader, final int desiredWidth, final int desiredHeight, String url) {
+    public static void downloadImage(final WeakReferenceSupplier<Fragment> fragment, final Receiver<Bitmap> receiver, final PriorityDownloader downloader, final int desiredWidth, final int desiredHeight, String url) {
         final DownloadRequest request= new DownloadRequest<>(
                 new InputStreamReceiver() {
                     @Override
@@ -133,7 +170,7 @@ public class ImageUtils {
 
                         }
                         final Bitmap bitmap = decodeBitmapFromStream(sourceAttributes, inSampleSize, stream);
-                        if(bitmap != null && fragment.getActivity() != null){
+                        if(bitmap != null && fragment.isPresent()){
                             receiver.accept(bitmap);
                         }
                     }

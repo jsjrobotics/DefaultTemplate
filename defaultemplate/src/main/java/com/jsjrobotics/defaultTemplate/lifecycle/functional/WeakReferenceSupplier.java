@@ -1,6 +1,8 @@
 package com.jsjrobotics.defaultTemplate.lifecycle.functional;
 
 
+import android.widget.ImageView;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -26,8 +28,20 @@ public class WeakReferenceSupplier<Data> {
             if (context == null) {
                 mData = null;
             }
-            return Optional.of(context);
+            return Optional.ofNullable(context);
         }
         return Optional.empty();
+    }
+
+    public Data value() {
+        return get().get();
+    }
+
+    public boolean isPresent() {
+        return get().isPresent();
+    }
+
+    public void ifPresent(Receiver<Data> receiver) {
+        get().ifPresent(receiver);
     }
 }

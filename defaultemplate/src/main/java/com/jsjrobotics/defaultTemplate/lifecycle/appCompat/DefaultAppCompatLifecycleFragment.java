@@ -144,6 +144,21 @@ public abstract class DefaultAppCompatLifecycleFragment extends Fragment impleme
         });
     }
 
+    public static void runOnUiThread(WeakReferenceSupplier<Fragment> context, final Runnable runnable){
+        context.get().ifPresent(new Receiver<Fragment>() {
+            @Override
+            public void accept(Fragment fragment) {
+                ifAttached(fragment, new Receiver<FragmentActivity>() {
+                    @Override
+                    public void accept(FragmentActivity activity) {
+                        activity.runOnUiThread(runnable);
+                    }
+                });
+            }
+        });
+
+    }
+
     public WeakReferenceSupplier<Fragment> buildFragmentSupplier(final Fragment fragment){
         return new WeakReferenceSupplier<>(fragment);
     }
